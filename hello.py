@@ -15,6 +15,7 @@ import torch.nn.functional as F
 import csv
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using {device} device")
 
 generator = Generator(1, 128)
 generator = generator.to(device)
