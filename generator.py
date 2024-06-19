@@ -49,15 +49,30 @@ class Generator(nn.Module):
             nn.Conv2d(features, in_channels, 3, 1, 1),
             nn.Tanh(),
         )
-
+# input : torch.Size([8, 1, 128, 128])
+# After first_layer: torch.Size([8, 128, 128, 128])
+# After RB1: torch.Size([8, 128, 128, 128])
+# After RB2: torch.Size([8, 128, 128, 128])
+# After RB3: torch.Size([8, 128, 128, 128])
+# After RB4: torch.Size([8, 128, 128, 128])
+# After mid_layer: torch.Size([8, 512, 128, 128])
+# After PS1: torch.Size([8, 128, 256, 256])
+# Output shape: torch.Size([8, 1, 256, 256])
     def forward(self, x):
         x1 = self.first_layer(x)
+        print(f'After first_layer: {x1.shape}')
         x2 = self.RB1(x1)
+        print(f'After RB1: {x2.shape}')
         x3 = self.RB2(x2)
+        print(f'After RB2: {x3.shape}')
         x4 = self.RB3(x3)
+        print(f'After RB3: {x4.shape}')
         x5 = self.RB4(x4)
+        print(f'After RB4: {x5.shape}')
         x6 = self.mid_layer(x5 + x1)
+        print(f'After mid_layer: {x6.shape}')
         x7 = self.PS1(x6)
+        print(f'After PS1: {x7.shape}')
         return self.final_layer(x7)
 
 def test():
