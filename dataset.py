@@ -115,7 +115,7 @@ import rasterio
 import torchvision.transforms as transforms
 
 class CustomDataset(Dataset):
-    def __init__(self, lr_dir, hr_dir, lr_transform=None, hr_transform=None, hr_target_size=(128, 128)):
+    def __init__(self, lr_dir, hr_dir, lr_transform=None, hr_transform=None, hr_target_size=(512, 512)):
         self.lr_dir = lr_dir
         self.hr_dir = hr_dir
         self.lr_transform = lr_transform
