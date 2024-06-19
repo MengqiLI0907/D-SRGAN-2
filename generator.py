@@ -55,7 +55,13 @@ class Generator(nn.Module):
         nn.Tanh(),
     )
 
-
+# After RB1: torch.Size([4, 128, 128, 128])
+# After RB2: torch.Size([4, 128, 128, 128])
+# After RB3: torch.Size([4, 128, 128, 128])
+# After RB4: torch.Size([4, 128, 128, 128])
+# After mid_layer: torch.Size([4, 512, 128, 128])
+# After PS1: torch.Size([4, 256, 256, 256])
+# After PS2: torch.Size([4, 128, 512, 512])
   def forward(self, x):
     x1 = self.first_layer(x)
     x2 = self.RB1(x1)
