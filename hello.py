@@ -22,8 +22,8 @@ generator = generator.to(device)
 discriminator = Discriminator(1, 128)
 discriminator = discriminator.to(device)
 
-optim_G = torch.optim.Adam(generator.parameters(), lr=0.0001)
-optim_D = torch.optim.Adam(discriminator.parameters(), lr=0.0001)
+optim_G = torch.optim.Adam(generator.parameters(), lr=0.00001)
+optim_D = torch.optim.Adam(discriminator.parameters(), lr=0.00001)
 
 num_epochs = 2
 num_train_batches = float(len(train_loader))
@@ -57,8 +57,8 @@ for epoch in range(num_epochs):
         gf_loss = F.binary_cross_entropy_with_logits(predicted_hr_labels, torch.ones_like(predicted_hr_labels))  # adversarial loss
 
         # reconstruction loss
-        tv_loss = TV_loss(predicted_hr_images, 0.0000005)
-        gr_loss = 100 * F.mse_loss(predicted_hr_images, hr_images) + tv_loss  # L2 loss
+        tv_loss = TV_loss(predicted_hr_images, 0.0000001)
+        gr_loss = 10 * F.mse_loss(predicted_hr_images, hr_images) + tv_loss  # L2 loss
 
         g_loss = gf_loss + gr_loss
         print(f"Loss: {g_loss.item()}, Adversarial Loss: {gf_loss.item()}, Reconstruction Loss: {gr_loss.item()}")
