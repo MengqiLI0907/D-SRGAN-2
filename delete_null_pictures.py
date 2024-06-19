@@ -1,7 +1,7 @@
 import os
 import rasterio
 
-def filter_nodata(hr_input_path):
+def filter_nodata(hr_input_path,lr_input_path):
 
     count = 0
  
@@ -16,11 +16,16 @@ def filter_nodata(hr_input_path):
                     if not (data == nodata_value).any():  # 检查第一个波段是否包含 nodata
                         print(f"File {filename} contains nodata value {nodata_value}")
                         count += 1
-                        # os.remove(file_path)
+                        lr_filename = filename.replace("hr", "lr")
+                        lr_file_path = os.path.join(lr_input_path, lr_filename)
+                        print(f"Removing {file_path} and {lr_file_path}")    
+                        os.remove(file_path)
+                        os.remove(lr_file_path)
 
     print(f"Found {count} files with nodata values")
 # 定义路径
-hr_input_path = 'dataset/LR'
+hr_input_path = 'dataset/HR'
+lr_input_path = 'dataset/LR'
 # Found 7357 files with nodata values
 # 调用函数
-filter_nodata(hr_input_path)
+filter_nodata(hr_input_path,lr_input_path)
