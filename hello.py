@@ -29,6 +29,11 @@ num_epochs = 2
 num_train_batches = float(len(train_loader))
 num_val_batches = float(len(test_loader))
 
+# Define constants
+EPS = 1e-9
+gan_weight = 1.0
+l1_weight = 100.0
+
 # CSV file setup
 with open('training_log.csv', mode='w', newline='') as file:
     writer = csv.writer(file)
@@ -54,20 +59,21 @@ for epoch in range(num_epochs):
         lr_images = lr_images.float()
         predicted_hr_images = generator(lr_images)
         predicted_hr_labels = discriminator(predicted_hr_images)
-        gf_loss = F.binary_cross_entropy_with_logits(predicted_hr_labels, torch.ones_like(predicted_hr_labels))  # adversarial loss
 
-        # reconstruction loss
-        tv_loss = TV_loss(predicted_hr_images, 0.0000001)
-        gr_loss = 10 * F.mse_loss(predicted_hr_images, hr_images) + tv_loss  # L2 loss
-
-        g_loss = gf_loss + gr_loss
-        print(f"Loss: {g_loss.item()}, Adversarial Loss: {gf_loss.item()}, Reconstruction Loss: {gr_loss.item()}")
-
-        G_adv_loss += gf_loss.item()
-        G_rec_loss += gr_loss.item()
-        G_tot_loss += g_loss.item()
+        # Adversarial loss
+        gen_loss_GAN = torch.mean(-torch.log(predicted_hr_labels + EPS))
         
-        g_loss.backward()
+        # L1 loss
+        gen_loss_L1 = torch.mean(torch.abs(hr_images - predicted_hr_images))
+        
+        # Combined generator loss
+        gen_loss = gen_loss_GAN * gan_weight + gen_loss_L1 * l1_weight
+    
+        print(f"Loss: {gen_loss.item()}, GAN Loss: {gen_loss_GAN.item()}, L1 Loss: {gen_loss_L1.item()}")
+
+        G_tot_loss += gen_loss.item()
+        
+        gen_loss.backward()
         optim_G.step()
         
         # training discriminator
